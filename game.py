@@ -10,8 +10,20 @@ class Game:
         pygame.init()
         self.screen = pygame.display.set_mode((800, 600))
         self.running = False
+        self.init_graphics()
+        self.init_objects()
         
-    def run(self):         
+    def init_graphics(self):
+        img_bird1 = pygame.image.load("images/chicken/flying/frame-1.png")
+        self.img_bird1 = pygame.transform.rotozoom(img_bird1, 0, 1/16)
+            
+     
+    def init_objects(self):
+        self.bird_y_speed = 0
+        self.bird_pos = (0, 300)
+       
+    def run(self): 
+                
         clock = pygame.time.Clock()
         self.running = True
         while self.running: 
@@ -30,10 +42,21 @@ class Game:
                     self.running = False
         
     def handle_game_logic(self):
-        pass
+        bird_y = self.bird_pos[1]
+
+        #Painovoima
+        bird_y_speed += 1
+        bird_y += bird_y_speed
+
+        bird_y = self.bird_pos[1]
+        self.bird_pos = (self.bird_pos[0], bird_y)
                 
     def update_screen(self):
         self.screen.fill((230, 230, 255))
+        
+        #Pirrä lintu
+        self.screen.blit(self.img_bird1, self.bird_pos)
+        
         pygame.display.flip()
 
 if __name__ == "__main__":
