@@ -14,17 +14,24 @@ class Game:
         self.init_objects()
         
     def init_graphics(self):
-        img_bird1 = pygame.image.load("images/chicken/flying/frame-1.png")
-        self.img_bird1 = pygame.transform.rotozoom(img_bird1, 0, 1/16)
-            
+        self.frame = 0
+        bird_imgs = [
+            pygame.image.load("images/chicken/flying/frame-{i}.png")
+            for i in [1, 2 ,3, 4]
+        ]
+        self.bird_imgs = [
+            pygame.transform.rotozoom(x, 0, 1/16)
+            for x in bird_imgs
+        ]   
      
     def init_objects(self):
         self.bird_y_speed = 0
-        self.bird_pos = (0, 300)
+        self.bird_pos = (200, 000)
+        self.bird_lift = False
        
-    def run(self): 
-                
+    def run(self):                 
         clock = pygame.time.Clock()
+
         self.running = True
         while self.running: 
             self.handle_events() 
@@ -40,22 +47,40 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key in (pygame.K_SPACE, pygame.K_UP):
+                        self.bird_lift = True
+                elif event.type == pygame.KEYUP:
+                    if event.key in (pygame.K_SPACE, pygame.K_UP):
+                        self.bird_lift = False
         
     def handle_game_logic(self):
-        bird_y = self.bird_pos[1]
 
-        #Painovoima
-        bird_y_speed += 1
-        bird_y += bird_y_speed
+        bird_y = self.bird_pos[1]        
+        
+        if self.bird_lift:
+            # Lintua nostetaan (1 px nostovauhtia / frame)
+            self.bird_y_speed -= 0.5
+        else:
+            #Painovoima (lisää putoamisnopeutta joka kuvassa)
+            self.bird_y_speed += 0.2 
 
-        bird_y = self.bird_pos[1]
+        #liikuta lintua sen nopeuden verran    
+        bird_y += self.bird_y_speed        
         self.bird_pos = (self.bird_pos[0], bird_y)
                 
     def update_screen(self):
+        # Taytä tausta vaaleansinisellä  
         self.screen.fill((230, 230, 255))
         
         #Pirrä lintu
-        self.screen.blit(self.img_bird1, self.bird_pos)
+        angle = -90 * 0.04 * self.bird_y_speed
+        angle = max(min(angle, 60), -60) 
+
+        bird_img_i = self.bird_imgs[self.frame % 4]
+        
+        bird_img = pygame.transform.rotozoom(bird_img_i, angle, 1)
+        self.screen.blit(bird_img, self.bird_pos)
         
         pygame.display.flip()
 
