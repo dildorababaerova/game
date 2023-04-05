@@ -7,11 +7,11 @@ FPS_TEXT_COLOR = (128, 0, 128) #dark  purple
 TEXT_COLOR = (128, 0, 0) # dark red
 
 def main():
-    game = Game()
+    game = Game1()
     game.run()
     
     
-class Game:
+class Game1:
     def __init__(self):
         pygame.init()
         self.clock = pygame.time.Clock()
