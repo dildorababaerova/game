@@ -21,13 +21,13 @@ class Game:
         self.screen_w = self.screen.get_width()
         self.screen_h = self.screen.get_height()
         self.running = False
-        self.font16 = pygame.font.Font("fonts/SyneMoto-Regular.ttf", 16)
+        self.font16 = pygame.font.Font("fonts/SyneMono-Regular.ttf", 16)
         self.init_graphics()
         self.init_objects()
         
     def init_graphics(self): 
         big_font_size = int(96 * self.screen_h /450) 
-        self.font_big =  pygame.font.Font("fonts/SyneMoto-Regular.ttf",big_font_size)    
+        self.font_big =  pygame.font.Font("fonts/SyneMono-Regular.ttf",big_font_size)    
         original_bird_imges = [
             pygame.image.load(f"images/chicken/flying/frame-{i}.png")
             for i in [1, 2 ,3, 4]
@@ -206,6 +206,36 @@ class Game:
             self.screen.blit(fps_img, (0, 0))
         
         pygame.display.flip()
+        
+    class Obstacle:
+        def __init__(self, position, upper_height, lower_height, width = 100):
+            self.position = position # vasemman reunan sijainti
+            self.upper_height = upper_height
+            self.lower_height = lower_height
+            self.width = width
+            self.color = (0, 128, 0) # dark green
+            
+        @classmethod
+        def make_random(cls, screen_w, screen_h):
+            h1 = random.randint(int(screen_h * 0.05), int(screen_h * 0.75))
+            h2 = random.randint(int((screen_h - h1) * 0.05), int((screen_h - h1) * 0.75)) 
+            return cls(upper_height = h1, lower_height = h2, position = screen_w)
+        
+        def move(self, speed):
+            self.position -= speed
+            
+        def is_visible(self):
+            return self.position + self.width >= 0
+        
+        def render(self,screen):
+            x = self.position
+            uy = 0
+            uh = self.upper_height
+            pygame.draw.rect(screen, self.color, (x, uy, self.width, uh))
+            ly = screen.get_height() - self.lower_height
+            lh = self.lower_height
+            pygame.draw.rect(screen, self.color, (x, ly, self.width, lh))
+               
 
 if __name__ == "__main__":
     main()
