@@ -1,11 +1,11 @@
 import pygame
 
 def main():
-    gemet = GameT()
-    gemet.run()
+    game = Game()
+    game.run()
     
     
-class GameT:
+class Game():
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((800, 600))
@@ -109,5 +109,5 @@ class GameT:
         
         pygame.display.flip()
 
-    if __name__ == "__main__":
-        main()
+if __name__ == "__main__":
+    main()
